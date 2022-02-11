@@ -18,7 +18,7 @@
 Для подключения в проект скачайте файл WordReportGenerator ———> Report.cs и добавьте его в свой проект. Для работы требуется также добавить Nuget DocumentFormat.OpenXml.
 
 
-——————— Примеры ———————
+——————— ПРИМЕРЫ ———————
 
 
 Примеры можно найти в WordReportGenerator ———> Program.cs
