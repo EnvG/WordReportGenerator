@@ -36,7 +36,8 @@ namespace WordReportGenerator
         /// Добавить таблицу в документ
         /// </summary>
         /// <param name="content">Таблица, добавляемая в документ</param>
-        public void AddTable (List<string[]> content)
+        /// <param name="width">Ширина столбца</param>
+        public void AddTable<T>(List<T[]> content, string width = "500")
         {
             // Количество строк таблицы
             int rowsCount = content.Count;
@@ -54,8 +55,9 @@ namespace WordReportGenerator
                 for (int j = 0; j < columnsCount; j++)
                 {
                     TableCell cell = new TableCell();
+                    cell.AppendChild(new TableCellWidth() { Width = $"{width}", Type = TableWidthUnitValues.Pct });
                     // Значение в ячейке
-                    Paragraph value = this.GetParagraph(content[i][j]);
+                    Paragraph value = this.GetParagraph(content[i][j].ToString());
 
                     // Добавление значения в ячейку
                     cell.Append(value);
@@ -69,18 +71,46 @@ namespace WordReportGenerator
 
             this.body.Append(table);
         }
-        #endregion
+        /// <summary>
+        /// Добавить параграф в документ
+        /// </summary>
+        /// <param name="runs">Текст, из которого состоит параграф</param>
+        public void AddParagraph(params Run[] runs)
+        {
+            Paragraph paragraph = new Paragraph();
+            foreach (Run run in runs)
+            {
+                paragraph.Append(run);
+            }
 
+            this.body.Append(paragraph);
+        }
+        #endregion
+        /// <summary>
+        /// Получить текст для параграфа
+        /// </summary>
+        /// <param name="content">Содержание</param>
+        /// <param name="verticalPosition">Вертикальное выравнивание</param>
+        /// <returns></returns>
+        public static Run GetRun(string content, VerticalPositionValues verticalPosition = VerticalPositionValues.Baseline)
+        {
+            Run run = new Run(new RunProperties(new VerticalTextAlignment { Val = verticalPosition }), new Text(content) { Space = SpaceProcessingModeValues.Preserve });
+
+            return run;
+        }
         /// <summary>
         /// Получение параграфа с данным содержанием
         /// </summary>
         /// <param name="content">Содержание параграфа</param>
         /// <returns></returns>
-        private Paragraph GetParagraph (string content)
+        private Paragraph GetParagraph(string content, VerticalPositionValues verticalPosition = VerticalPositionValues.Baseline)
         {
             Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            Text text = new Text(content);
+            Run run = new Run(new RunProperties(new VerticalTextAlignment { Val = verticalPosition }));
+            Text text = new Text(content)
+            {
+                Space = SpaceProcessingModeValues.Preserve
+            };
 
             // Добавление текста в набор
             run.Append(text);
